@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <title>Lab 8: Denver home location exercise</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!-- Is the is the latest version of Leaflet? -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: rgb(43, 43, 43);
+            font-family: "Lato", sans-serif;
+            font-size: 100%;
+            font-weight: 300;
+            color: rgb(172, 172, 172);
+        }
+
+        header,
+        footer,
+        section {
+            padding: 6px 10%;
+            margin: 0 auto;
+            width: 80%
+        }
+
+        h1 {
+            display: inline-block;
+            margin-right: 20px;
+            color: rgb(190, 190, 190);
+            font-size: 3.5em;
+            font-weight: 700;
+        }
+
+        h2 {
+            display: inline-block;
+            color: rgba(255, 200, 0, 0.8);
+            letter-spacing: 0.05em;
+            margin-top: 0px;
+            font-weight: 300;
+            text-transform: uppercase;
+            ;
+        }
+
+        #map {
+            width: 80%;
+            height: 540px;
+            margin: 10px auto;
+        }
+
+        p {
+            font-size: 1em;
+            color: rgba(170, 170, 170);
+            ;
+            font-weight: 300;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Lexington Beer</h1>
+        <h2>Top 15 Breweries</h2>
+    </header>
+
+    <div id='map'></div>
+
+    <footer>
+        <p>Map authored by Emily Shearer</p>
+        <p>Lexington, KY is a hot spot for up and coming breweries. This map shows the Top 15 local breweries and their
+            star ratings.</p>
+        <ul>
+            <li>Map created for New Maps Plus at the University of Kentucky.</li>
+            <li>Follow me on twitter <a href="https://twitter.com/shearer2_emily">@shearer2_emily</a></li>
+            <!-- or any other social media site -->
+            <li>Visit my Github account <a href='https://github.com/EmilyShearer'>@EmilyShearer</a> </li>
+            <li>Check out the Class GitHub Repository: <a href="https://newmapsplus.github.io">New Maps Plus</a></li>
+        </ul>
+    </footer>
+    <!-- Is the is the latest version of Leaflet? -->
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="data/breweries.js"></script>
+    <script>
+        var map = L.map('map', {
+            center: [38.05, -84.5],
+            zoom: 13,
+        });
+
+        var tiles = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/dark_all/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+        console.log(beer);
+
+        var beerLayer = L.geoJson(beer, {
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, {
+                    color: '#94741e',
+                    fillColor: '#94741e',
+                    fillOpacity: .4,
+                    radius: 7,
+                });
+            },
+            onEachFeature: function (feature, layer) {
+                layer.on('mouseover', function () {
+                    layer.setStyle({
+                        color: 'blue',
+                        fillColor: 'blue',
+                        fillOpacity: .5
+                    })
+                })
+                layer.on('mouseout', function () {
+                    layer.setStyle({
+                        color: '#94741e',
+                        fillColor: '#94741e',
+                        fillOpacity: .4,
+                    })
+                })
+            }
+        }).addTo(map);
+
+
+        map.on('mouseover', function (e) {
+            beerLayer.eachLayer(function (layer) {
+                beerLayer.bindTooltip(`<b>${layer.feature.properties.name}</b><br>Star Rating: ${layer.feature.properties.star_rating}`);
+            })
+        });
+    </script>
