@@ -97,7 +97,7 @@
             subdomains: 'abcd',
             maxZoom: 19
         }).addTo(map);
-        console.log(beer);
+        // console.log(beer);
 
         var beerLayer = L.geoJson(beer, {
             pointToLayer: function (feature, latlng) {
@@ -105,10 +105,12 @@
                     color: '#94741e',
                     fillColor: '#94741e',
                     fillOpacity: .4,
-                    radius: 7,
+                    radius: feature.properties.star_rating**6/1000
                 });
             },
             onEachFeature: function (feature, layer) {
+                console.log(feature.properties.star_rating)
+                layer.bindTooltip(`<b>${feature.properties.name}</b><br>Star Rating: ${feature.properties.star_rating}`);
                 layer.on('mouseover', function () {
                     layer.setStyle({
                         color: 'blue',
@@ -127,9 +129,9 @@
         }).addTo(map);
 
 
-        map.on('mouseover', function (e) {
-            beerLayer.eachLayer(function (layer) {
-                beerLayer.bindTooltip(`<b>${layer.feature.properties.name}</b><br>Star Rating: ${layer.feature.properties.star_rating}`);
-            })
-        });
+        // map.on('mouseover', function (e) {
+        //     beerLayer.eachLayer(function (layer) {
+        //         beerLayer.bindTooltip(`<b>${layer.feature.properties.name}</b><br>Star Rating: ${layer.feature.properties.star_rating}`);
+        //     })
+        // });
     </script>
